@@ -592,11 +592,12 @@ function doPost(e) {
     <script>
         // APP STATE & STORAGE MANAGEMENT
         const DEFAULT_PIN = "qwerty"; // Default PIN for admin access
+        const DEFAULT_GAS_URL = 'https://script.google.com/macros/s/AKfycbx1dZcvKgVdGyeNtS0vtbg35VNRuZj-EzZDUiueiBXrB05KFSV41ZTU6bS1eYVweCO4Og/exec';
 
         let state = {
             activeTab: 'customer',
             isAdminAuthorized: false,
-            gasWebAppUrl: localStorage.getItem('picportal_gas_url') || '',
+            gasWebAppUrl: localStorage.getItem('picportal_gas_url') || DEFAULT_GAS_URL,
             gasCustomers: [],
             tokens: JSON.parse(localStorage.getItem('picportal_mock_tokens')) || [
                 {
@@ -1066,7 +1067,7 @@ function doPost(e) {
         }
 
         function saveGASUrl() {
-            const url = document.getElementById('input-gas-url').value.trim();
+            const url = document.getElementById('input-gas-url').value.trim() || DEFAULT_GAS_URL;
             state.gasWebAppUrl = url;
             state.gasCustomers = [];
             localStorage.setItem('picportal_gas_url', url);
