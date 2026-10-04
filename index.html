@@ -385,6 +385,8 @@
                         <li>Buat <strong>Google Sheets</strong> baru di Google Drive Anda.</li>
                         <li>Buka menu <strong>Ekstensi &gt; Apps Script</strong>.</li>
                         <li>Hapus semua kode bawaan, lalu salin (copy) kode Apps Script di bawah ini:</li>
+                        <li>Simpan kode. Pilih fungsi <strong>authorizeDriveAccess</strong> di dropdown fungsi Apps Script, klik <strong>Jalankan (Run)</strong>, lalu izinkan akses Google Drive dan Sheets.</li>
+                        <li>Jika file <strong>appsscript.json</strong> mengatur <strong>oauthScopes</strong> secara manual, pastikan mencakup <code>https://www.googleapis.com/auth/drive</code> dan <code>https://www.googleapis.com/auth/spreadsheets</code>.</li>
                     </ol>
 
                     <!-- Apps Script Code Snippet -->
@@ -407,6 +409,11 @@ function ensureSheet() {
 function getOrCreateFolder(parent, name) {
     var folders = parent.getFoldersByName(name);
     return folders.hasNext() ? folders.next() : parent.createFolder(name);
+}
+
+function authorizeDriveAccess() {
+    DriveApp.getRootFolder().getName();
+    SpreadsheetApp.getActiveSpreadsheet().getName();
 }
 
 function doGet(e) {
@@ -560,7 +567,7 @@ function doPost(e) {
                         </button>
                     </div>
 
-                    <ol start="4" class="list-decimal list-inside space-y-2 text-slate-600 pl-1">
+                    <ol start="6" class="list-decimal list-inside space-y-2 text-slate-600 pl-1">
                         <li>Klik <strong>Terapkan (Deploy) &gt; Penerapan baru (New deployment)</strong>.</li>
                         <li>Pilih Jenis: <strong>Aplikasi Web (Web App)</strong>.</li>
                         <li>Ubah <em>Jalankan sebagai (Execute as)</em>: <strong>Saya (Me)</strong>.</li>
