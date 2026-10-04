@@ -597,6 +597,7 @@ function doPost(e) {
             activeTab: 'customer',
             isAdminAuthorized: false,
             gasWebAppUrl: localStorage.getItem('picportal_gas_url') || '',
+            gasCustomers: [],
             tokens: JSON.parse(localStorage.getItem('picportal_mock_tokens')) || [
                 {
                     token: 'FOTO-DEMO1',
@@ -890,6 +891,8 @@ function doPost(e) {
 
                 state.tokens = state.tokens.filter(token => token.token !== result.token);
                 state.tokens.unshift(result);
+                state.gasCustomers = state.gasCustomers.filter(token => token.token !== result.token);
+                state.gasCustomers.unshift(result);
                 saveLocalTokens();
                 document.getElementById('admin-input-name').value = '';
                 renderTokenList();
@@ -957,7 +960,7 @@ function doPost(e) {
         function populateAdminCustomerSelect() {
             const select = document.getElementById('admin-select-customer');
             const selectedToken = select.value;
-            const uploadableTokens = state.tokens.filter(token => token.folderId);
+            const uploadableTokens = state.gasCustomers.filter(token => token.folderId);
             const placeholder = uploadableTokens.length ? 'Pilih customer...' : 'Buat token customer terlebih dahulu';
             select.innerHTML = `<option value="">${placeholder}</option>` + uploadableTokens.map(token =>
                 `<option value="${escapeHtml(token.token)}">${escapeHtml(token.customerName)} - ${escapeHtml(token.token)}</option>`
@@ -972,6 +975,7 @@ function doPost(e) {
 
         function deleteToken(token) {
             state.tokens = state.tokens.filter(t => t.token !== token);
+            state.gasCustomers = state.gasCustomers.filter(t => t.token !== token);
             saveLocalTokens();
 
             if (state.gasWebAppUrl) {
@@ -1064,8 +1068,10 @@ function doPost(e) {
         function saveGASUrl() {
             const url = document.getElementById('input-gas-url').value.trim();
             state.gasWebAppUrl = url;
+            state.gasCustomers = [];
             localStorage.setItem('picportal_gas_url', url);
             updateBackendStatusBadge();
+            renderTokenList();
             toggleSetupModal(false);
             showToast('URL GAS berhasil disimpan!', 'success');
             if (url) syncWithGASBackend();
@@ -1077,6 +1083,7 @@ function doPost(e) {
                 const res = await fetch(`${state.gasWebAppUrl}?action=getAll`);
                 const json = await res.json();
                 if (json.status === 'success' && Array.isArray(json.data)) {
+                    state.gasCustomers = json.data;
                     state.tokens = json.data;
                     saveLocalTokens();
                     renderTokenList();
