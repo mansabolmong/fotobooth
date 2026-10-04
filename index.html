@@ -525,7 +525,9 @@ function doPost(e) {
                     totalBytes += bytes.length;
                     return { photo: photo, bytes: bytes };
                 });
-                if (totalBytes > 10 * 1024 * 1024) throw new Error("Total ukuran foto melebihi 10 MB.");
+                if (totalBytes > 30 * 1024 * 1024) {
+  throw new Error("Total ukuran foto melebihi 30 MB.");
+}
 
                 var folder = DriveApp.getFolderById(contents.folderId);
                 decodedPhotos.forEach(function(item) {
